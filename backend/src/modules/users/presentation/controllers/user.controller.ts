@@ -42,6 +42,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAllForSelect() {
-    return this.usersGateway.findAllForSelect();
+    return this.usersGateway.findAll();
   }
 }

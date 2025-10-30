@@ -11,12 +11,26 @@ export class UsersGatewayTypeorm implements UsersGatewayInterface {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAllForSelect(): Promise<{ value: number; label: string }[]> {
-    return this.userRepository
-      .createQueryBuilder('user')
-      .select(['user.id AS value', 'user.name AS label'])
-      .getRawMany();
-  }
+  async findAll(): Promise<User[]> {
+      return this.userRepository.find({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          document: true,
+          role: true,
+          imageUrl: true,
+          createdAt: true,
+          updatedAt: true,
+          userAuth: {
+            id: true,
+            user_id: true,
+            created_at: true,
+            updated_at: true
+          }
+        }
+      });
+    }
 
   async findOneBy(where: Partial<User>): Promise<User | null> {
     return this.userRepository.findOne({ 
