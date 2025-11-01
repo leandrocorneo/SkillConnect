@@ -29,4 +29,10 @@ export class UserAuth {
     @OneToOne(() => User, (user) => user.userAuth)
     @JoinColumn({ name: 'user_id' })
     user: User;
+
+    constructor(data?: Partial<UserAuth>) {
+        if (data) {
+            Object.assign(this, data);
+        }
+    }
 }

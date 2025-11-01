@@ -1,34 +1,23 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../../../shared/guards/jwt.guard';
 import { CreateUserDto } from '../dto/input/create-user.dto';
 import { RegisterResponseDto } from '../dto/output/register-response.dto';
 import { FindUserOneByUseCase } from '../../domain/use-cases/users/find-one-by-id.use-case';
-import { HashUtil } from 'src/shared/utils/hash.util';
 import { UsersGatewayTypeorm } from '../../infra/gateway/user/users.gateway.typeorm';
-import { UsersAuthGatewayTypeorm } from '../../infra/gateway/user-auth/users-auth.gateway';
+import { RegisterUseCase } from 'src/modules/users/domain/use-cases/users/register.use-case';
 
 @Controller('users')
 export class UserController {
   constructor(
     private readonly findOneByIdUseCase: FindUserOneByUseCase,
     private readonly usersGateway: UsersGatewayTypeorm,
-    private readonly usersAuthGateway: UsersAuthGatewayTypeorm,
+    private readonly registerUseCase: RegisterUseCase,
   ) {}
 
   @Post()
-  async register(@Body() createUserDto: CreateUserDto): Promise<RegisterResponseDto> {
-    const { password, ...userData } = createUserDto;
-    
-    const user = await this.usersGateway.create(userData);
-
-    const hashedPassword = await HashUtil.hash(password);
-    await this.usersAuthGateway.create({
-      user_id: user.id,
-      hash_password: hashedPassword,
-    });
-
-    const { userAuth, ...userResponse } = user;
-    return userResponse as RegisterResponseDto;
+  async register(@Body() userDto: CreateUserDto): Promise<RegisterResponseDto> {    
+    const user = await this.registerUseCase.execute(userDto, userDto.role);
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)
