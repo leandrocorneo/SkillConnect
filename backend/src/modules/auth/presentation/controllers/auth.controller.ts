@@ -30,5 +30,16 @@ export class AuthController {
       },
     });
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res() res: Response) {
+    res.clearCookie('auth', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+    return res.json({ message: 'Logged out successfully' });
+  }
 }
 
