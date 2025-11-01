@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/core/entities/user.entity';
 import { Roles } from 'src/core/object-value/user-roles.enum';
@@ -31,7 +31,29 @@ export class JwtAuthUseCase {
   login(user: User) {
     const payload = { name: user.name, sub: user.id, role: user.role as Roles };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { expiresIn: '24h' }),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
+  }
+
+  refresh(refreshToken: string){
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      const newAccessToken = this.jwtService.sign(
+        { sub: payload.sub, name: payload.name, role: payload.role },
+        { expiresIn: '24h' },
+      );
+
+      const newRefreshToken = this.jwtService.sign(
+        { sub: payload.sub, name: payload.name, role: payload.role },
+        { expiresIn: '7d' },
+      );
+      return { 
+        access_token: newAccessToken,
+        refresh_token: newRefreshToken
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }
