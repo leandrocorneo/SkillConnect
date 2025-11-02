@@ -46,16 +46,19 @@ final ThemeData appTheme = ThemeData(
     suffixIconColor: AppColors.black,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.white, width: 1),
+      borderSide: const BorderSide(color: AppColors.darkGray, width: 1),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.white, width: 1),
+      borderSide: const BorderSide(color: AppColors.darkGray, width: 1),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.white, width: 1),
+      borderSide: const BorderSide(color: AppColors.primaryDark, width: 2),
     ),
+    floatingLabelStyle: const TextStyle(color: AppColors.primaryDark),
+    labelStyle: const TextStyle(color: AppColors.gray),
+    hintStyle: const TextStyle(color: AppColors.gray),
     errorMaxLines: 2,
   ),
 );
@@ -101,16 +104,19 @@ final ThemeData darkAppTheme = ThemeData(
     fillColor: AppColors.transparent,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.lightGray, width: 1),
+      borderSide: const BorderSide(color: AppColors.darkGray, width: 1),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.lightGray, width: 1),
+      borderSide: const BorderSide(color: AppColors.darkGray, width: 1),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.sp),
-      borderSide: const BorderSide(color: AppColors.lightGray, width: 1),
+      borderSide: const BorderSide(color: AppColors.primaryLight, width: 2),
     ),
+    floatingLabelStyle: const TextStyle(color: AppColors.primaryLight),
+    labelStyle: const TextStyle(color: AppColors.white),
+    hintStyle: const TextStyle(color: AppColors.white),
     errorMaxLines: 2,
   ),
 );

@@ -4,9 +4,9 @@ class AppColors {
   // Neutras
   static const white = Color(0xFFFFFFFF);
   static const black = Color(0xFF000000);
-  static const lightGray = Color(0xFFA9DFBF);
-  static const gray = Color(0xFF58D68D);
-  static const darkGray = Color(0xFF27AE60);
+  static const lightGray = Color(0xFFF5F5F5);
+  static const gray = Color(0xFF9E9E9E);
+  static const darkGray = Color(0xFF616161);
   static const transparent = Colors.transparent;
 
   // Primária (base da paleta)
