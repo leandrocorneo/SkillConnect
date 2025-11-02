@@ -1,27 +1,31 @@
 import { Controller, Post, UseGuards, Request, Body, Res, HttpStatus, HttpCode } from '@nestjs/common';
 import { Response } from 'express';
-import { JwtAuthUseCase } from '../../domain/use-cases/jwt-auth.use-case';
 import { LocalAuthGuard } from '../../../../shared/guards/local.guard';
 import { ReqUser } from 'src/shared/types/interface/requestUser.interface';
+import { LoginUseCase } from '../../domain/use-cases/login.use-case';
+import { RefreshTokenUseCase } from '../../domain/use-cases/refresh-token.use-case';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private jwtAuthUseCase: JwtAuthUseCase) {}
+  constructor(
+    private readonly loginUseCase: LoginUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Request() req: ReqUser, @Res() res: Response) {
 
-    const token = await this.jwtAuthUseCase.login(req.user);
+    const result = await this.loginUseCase.execute(req.user);
 
-    res.cookie('auth', token.access_token, {
+    res.cookie('auth', result.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
     });
 
-    res.cookie('refresh_token', token.refresh_token, {
+    res.cookie('refresh_token', result.refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -41,7 +45,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async refresh(@Request() req, @Res() res: Response) {
     const refreshToken = req.cookies['refresh_token'];
-    const result = await this.jwtAuthUseCase.refresh(refreshToken);
+    const result = await this.refreshTokenUseCase.execute(refreshToken);
 
     res.cookie('auth', result.access_token, {
       httpOnly: true,
@@ -57,8 +61,6 @@ export class AuthController {
 
     return res.json({ message: 'Access token refreshed' });
   }
-
-
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
