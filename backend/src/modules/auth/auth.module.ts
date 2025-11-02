@@ -7,8 +7,9 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalAuthUseCase } from './domain/use-cases/local-auth.use-case';
-import { JwtAuthUseCase } from './domain/use-cases/jwt-auth.use-case';
 import { LocalAuthGuard } from '../../shared/guards/local.guard';
+import { LoginUseCase } from './domain/use-cases/login.use-case';
+import { RefreshTokenUseCase } from './domain/use-cases/refresh-token.use-case';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { LocalAuthGuard } from '../../shared/guards/local.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const expiration = configService.get<string>('JWT_EXPIRATION') || '86400'; // 24h in seconds
+        const expiration = configService.get<string>('JWT_EXPIRATION') || '86400';
         return {
           secret: configService.get<string>('JWT_SECRET'),
           signOptions: { 
@@ -34,7 +35,8 @@ import { LocalAuthGuard } from '../../shared/guards/local.guard';
     LocalAuthGuard,
     JwtStrategy,
     LocalAuthUseCase,
-    JwtAuthUseCase,
+    LoginUseCase,
+    RefreshTokenUseCase,
   ],
   exports: [JwtStrategy],
 })

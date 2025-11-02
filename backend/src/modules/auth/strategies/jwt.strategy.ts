@@ -10,7 +10,7 @@ import { cookieExtractor } from 'src/shared/utils/cookie-extractor.util';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     configService: ConfigService,
-    private readonly jwtAuthUseCase: FindUserOneByUseCase,
+    private readonly findUserByUseCase: FindUserOneByUseCase,
   ) {
     const secret = configService.get<string>('JWT_SECRET');
     if (!secret) {
@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtPayload) {
-    const user = this.jwtAuthUseCase.execute({ id: payload.sub });
+    const user = this.findUserByUseCase.execute({ id: payload.sub });
 
     return user;
   }
