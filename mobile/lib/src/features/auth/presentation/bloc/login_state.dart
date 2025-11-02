@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile/src/features/auth/domain/models/login_model.dart';
+import 'package:mobile/src/shared/domain/model/user_model.dart';
 
 abstract class LoginState extends Equatable {
   @override
@@ -11,12 +11,12 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final LoginModel loginModel;
+  final UserModel userModel;
 
-  LoginSuccess(this.loginModel);
+  LoginSuccess(this.userModel);
 
   @override
-  List<Object?> get props => [loginModel];
+  List<Object?> get props => [userModel];
 }
 
 class LoginFailure extends LoginState {

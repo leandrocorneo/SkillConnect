@@ -1,14 +1,17 @@
 import 'package:get_it/get_it.dart';
 import 'package:mobile/src/core/network/dio_network.dart';
+import 'package:mobile/src/features/auth/auth_injections.dart';
 import 'package:mobile/src/shared/app_injections.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initInjections() async {
-  await initDioInjections();
   await initSharedPrefsInjections();
   await initAppInjections();
+  await initDioInjections();
+
+  await initAuthInjections();
 }
 
 initSharedPrefsInjections() async {

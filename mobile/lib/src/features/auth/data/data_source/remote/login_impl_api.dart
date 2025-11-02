@@ -14,16 +14,16 @@ class LoginImplApi implements AbstractLoginApi {
   LoginImplApi(this.dio);
 
   @override
-  Future<LoginApiresponse<LoginModel>> login(LoginParams params) async {
+  Future<LoginApiResponse<UserModel>> login(LoginParams params) async {
     try {
-      final result = await dio.post('/auth/login', data: params.toJson());
+      final result = await dio.post('/auth', data: params.toJson());
 
       if (result.data == null)
         throw ServerException("Unknown Error", result.statusCode);
 
-      return LoginApiresponse.fromJson<LoginModel>(
-        result.data,
-        UserModel.fromJson,
+      return LoginApiResponse<UserModel>.fromJson(
+        {"data": result.data['user']}, // result.data é {id, name, email, role}
+        (json) => UserModel.fromJson(json),
       );
     } on ServerException {
       rethrow;

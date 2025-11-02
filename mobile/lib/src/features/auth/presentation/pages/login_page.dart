@@ -15,87 +15,77 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginBloc loginBloc = LoginBloc(loginUseCase: sl<LoginUseCase>());
+
   final _formKey = GlobalKey<FormBuilderState>();
 
-  void _handleLogin() {
+  void _handleLogin(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final email = _formKey.currentState!.value['email'];
       final password = _formKey.currentState!.value['password'];
 
-      context.read<LoginBloc>().add(
-        LoginSubmitted(email: email, password: password),
-      );
+      loginBloc.add(LoginSubmitted(email: email, password: password));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LoginBloc(loginUseCase: sl<LoginUseCase>()),
-      child: Scaffold(
-        body: Center(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Login', style: Theme.of(context).textTheme.headlineLarge),
-                const SizedBox(height: 24),
-                FormBuilder(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      FormBuilderTextField(
-                        name: 'email',
-                        decoration: InputDecoration(labelText: "Email"),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                            errorText: "Campo obrigatório",
-                          ),
-                          FormBuilderValidators.email(
-                            errorText: "E-mail inválido!",
-                          ),
-                        ]),
-                      ),
-                      const SizedBox(height: 16),
-                      FormBuilderTextField(
-                        name: 'password',
-                        obscureText: true,
-                        decoration: InputDecoration(labelText: 'Senha'),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.minLength(
-                            6,
-                            errorText:
-                                'A senha deve ter pelo menos 6 caracteres',
-                          ),
-                          FormBuilderValidators.match(
-                            RegExp(r'.*[0-9].*'),
-                            errorText:
-                                'A senha deve conter pelo menos um número',
-                          ),
-                          FormBuilderValidators.match(
-                            RegExp(r'.*[A-Z].*'),
-                            errorText:
-                                'A senha deve conter ao menos uma letra maiúscula',
-                          ),
-                        ]),
-                      ),
-                      const SizedBox(height: 16),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: FloatingActionButton.extended(
-                          onPressed: _handleLogin,
-                          label: const Text('Login'),
-                          icon: const Icon(Icons.login),
+    return Scaffold(
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Login', style: Theme.of(context).textTheme.headlineLarge),
+              const SizedBox(height: 24),
+              FormBuilder(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    FormBuilderTextField(
+                      name: 'email',
+                      decoration: InputDecoration(labelText: "Email"),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(
+                          errorText: "Campo obrigatório",
                         ),
+                        FormBuilderValidators.email(
+                          errorText: "E-mail inválido!",
+                        ),
+                      ]),
+                    ),
+                    const SizedBox(height: 16),
+                    FormBuilderTextField(
+                      name: 'password',
+                      obscureText: true,
+                      decoration: InputDecoration(labelText: 'Senha'),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.minLength(
+                          6,
+                          errorText: 'A senha deve ter pelo menos 6 caracteres',
+                        ),
+                        FormBuilderValidators.match(
+                          RegExp(r'.*[0-9].*'),
+                          errorText: 'A senha deve conter pelo menos um número',
+                        ),
+                      ]),
+                    ),
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: FloatingActionButton.extended(
+                        onPressed: () => _handleLogin(context),
+                        label: const Text('Login'),
+                        icon: const Icon(Icons.login),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
