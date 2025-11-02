@@ -10,7 +10,7 @@ export class LocalAuthUseCase {
     private readonly findUserAuthByUseCase: FindUserAuthByUseCase,
   ) {}
 
-  async authenticate(email: string, password: string) {
+  async execute(email: string, password: string) {
     const user = await this.findOneUserByIdUseCase.execute({ email });
     if (!user) return null;
 
