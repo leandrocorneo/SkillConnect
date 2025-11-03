@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile/src/core/helper/helper.dart';
 import 'package:mobile/src/core/router/router.dart';
 import 'package:mobile/src/core/styles/app_theme.dart';
+import 'package:mobile/src/features/auth/presentation/pages/auth_gate.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/src/core/router/app_router_enum.dart';
 import 'package:device_preview/device_preview.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
                       theme: value.darkTheme ? darkAppTheme : appTheme,
                       builder: DevicePreview.appBuilder,
                       onGenerateRoute: AppRouter.generateRoute,
-                      initialRoute: AppRouterEnum.login.route,
+                      home: AuthGate(),
                     );
                   },
                 );

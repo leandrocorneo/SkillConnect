@@ -23,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     result.fold(
       (failure) => emit(LoginFailure(failure.toString())),
-      (userModel) => {print(userModel.name), emit(LoginSuccess(userModel))},
+      (userModel) => emit(LoginSuccess(userModel)),
     );
   }
 }

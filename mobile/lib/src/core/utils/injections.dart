@@ -7,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 final sl = GetIt.instance;
 
 Future<void> initInjections() async {
+  await initDioInjections();
   await initSharedPrefsInjections();
   await initAppInjections();
-  await initDioInjections();
 
   await initAuthInjections();
 }

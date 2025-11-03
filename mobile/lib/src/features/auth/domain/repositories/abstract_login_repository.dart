@@ -5,4 +5,6 @@ import 'package:mobile/src/shared/domain/model/user_model.dart';
 
 abstract class AbstractLoginRepository {
   Future<Either<Failure, UserModel>> login(LoginParams params);
+
+  Future<Either<Failure, bool>> verifyToken();
 }

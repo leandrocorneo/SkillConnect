@@ -6,6 +6,7 @@ import 'package:mobile/src/core/utils/injections.dart';
 import 'package:mobile/src/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mobile/src/features/auth/presentation/bloc/login_bloc.dart';
 import 'package:mobile/src/features/auth/presentation/bloc/login_event.dart';
+import 'package:mobile/src/features/auth/presentation/bloc/login_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,61 +32,75 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Login', style: Theme.of(context).textTheme.headlineLarge),
-              const SizedBox(height: 24),
-              FormBuilder(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    FormBuilderTextField(
-                      name: 'email',
-                      decoration: InputDecoration(labelText: "Email"),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(
-                          errorText: "Campo obrigatório",
-                        ),
-                        FormBuilderValidators.email(
-                          errorText: "E-mail inválido!",
-                        ),
-                      ]),
-                    ),
-                    const SizedBox(height: 16),
-                    FormBuilderTextField(
-                      name: 'password',
-                      obscureText: true,
-                      decoration: InputDecoration(labelText: 'Senha'),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.minLength(
-                          6,
-                          errorText: 'A senha deve ter pelo menos 6 caracteres',
-                        ),
-                        FormBuilderValidators.match(
-                          RegExp(r'.*[0-9].*'),
-                          errorText: 'A senha deve conter pelo menos um número',
-                        ),
-                      ]),
-                    ),
-                    const SizedBox(height: 16),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: FloatingActionButton.extended(
-                        onPressed: () => _handleLogin(context),
-                        label: const Text('Login'),
-                        icon: const Icon(Icons.login),
+    return BlocListener<LoginBloc, LoginState>(
+      bloc: loginBloc,
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else if (state is LoginFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
+      child: Scaffold(
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Login', style: Theme.of(context).textTheme.headlineLarge),
+                const SizedBox(height: 24),
+                FormBuilder(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'email',
+                        decoration: InputDecoration(labelText: "Email"),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(
+                            errorText: "Campo obrigatório",
+                          ),
+                          FormBuilderValidators.email(
+                            errorText: "E-mail inválido!",
+                          ),
+                        ]),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      FormBuilderTextField(
+                        name: 'password',
+                        obscureText: true,
+                        decoration: InputDecoration(labelText: 'Senha'),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.minLength(
+                            6,
+                            errorText:
+                                'A senha deve ter pelo menos 6 caracteres',
+                          ),
+                          FormBuilderValidators.match(
+                            RegExp(r'.*[0-9].*'),
+                            errorText:
+                                'A senha deve conter pelo menos um número',
+                          ),
+                        ]),
+                      ),
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: FloatingActionButton.extended(
+                          onPressed: () => _handleLogin(context),
+                          label: const Text('Login'),
+                          icon: const Icon(Icons.login),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
