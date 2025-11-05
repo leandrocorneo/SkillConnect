@@ -32,7 +32,9 @@ export class AuthController {
     });
 
     return res.json({
-      user: {
+      statusCode: HttpStatus.OK,
+      message: 'Login successful',
+      data: {
         id: req.user.id,
         name: req.user.name,
         email: req.user.email,
@@ -59,7 +61,11 @@ export class AuthController {
       sameSite: 'lax',
     });
 
-    return res.json({ message: 'Access token refreshed' });
+    return res.json({ 
+      statusCode: HttpStatus.OK,
+      message: 'Access token refreshed',
+      data: null
+    });
   }
 
   @Post('logout')
@@ -78,7 +84,11 @@ export class AuthController {
       sameSite: 'lax',
     });
 
-    return res.json({ message: 'Logged out successfully' });
+    return res.json({ 
+      statusCode: HttpStatus.OK,
+      message: 'Logged out successfully', 
+      data: null
+    });
   }
 }
 

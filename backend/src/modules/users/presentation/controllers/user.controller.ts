@@ -5,6 +5,7 @@ import { RegisterResponseDto } from '../dto/output/register-response.dto';
 import { FindUserOneByUseCase } from '../../domain/use-cases/users/find-one-by-id.use-case';
 import { UsersGatewayTypeorm } from '../../infra/gateway/user/users.gateway.typeorm';
 import { RegisterUseCase } from 'src/modules/users/domain/use-cases/users/register.use-case';
+import { BaseResponseDto } from 'src/shared/dto/base-response.dto';
 
 @Controller('users')
 export class UserController {
@@ -15,22 +16,24 @@ export class UserController {
   ) {}
 
   @Post()
-  async register(@Body() userDto: CreateUserDto): Promise<RegisterResponseDto> {    
+  async register(@Body() userDto: CreateUserDto): Promise<BaseResponseDto<RegisterResponseDto>> {    
     const user = await this.registerUseCase.execute(userDto, userDto.role);
-    return user;
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'User registered successfully',
+      data: user as RegisterResponseDto,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<RegisterResponseDto> {
+  async findOne(@Param('id') id: number): Promise<BaseResponseDto<RegisterResponseDto>> {
     const user = await this.findOneByIdUseCase.execute({ id });
     const { userAuth, ...userResponse } = user;
-    return userResponse as RegisterResponseDto;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  async findAllForSelect() {
-    return this.usersGateway.findAll();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User retrieved successfully',
+      data: userResponse as RegisterResponseDto,
+    }
   }
 }
