@@ -1,5 +1,6 @@
 enum AppRouterEnum {
-  login('/login');
+  login('/login'),
+  home('/home');
 
   const AppRouterEnum(this.route);
   final String route;

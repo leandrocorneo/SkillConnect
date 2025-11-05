@@ -6,6 +6,7 @@ import 'package:mobile/src/core/utils/injections.dart';
 import 'package:mobile/src/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mobile/src/features/auth/presentation/bloc/login_bloc.dart';
 import 'package:mobile/src/features/auth/presentation/bloc/login_event.dart';
+import 'package:mobile/src/features/auth/presentation/bloc/login_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,24 +16,33 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginBloc loginBloc = LoginBloc(loginUseCase: sl<LoginUseCase>());
+
   final _formKey = GlobalKey<FormBuilderState>();
 
-  void _handleLogin() {
+  void _handleLogin(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final email = _formKey.currentState!.value['email'];
       final password = _formKey.currentState!.value['password'];
 
-      context.read<LoginBloc>().add(
-        LoginSubmitted(email: email, password: password),
-      );
+      loginBloc.add(LoginSubmitted(email: email, password: password));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LoginBloc(loginUseCase: sl<LoginUseCase>()),
+    return BlocListener<LoginBloc, LoginState>(
+      bloc: loginBloc,
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else if (state is LoginFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
       child: Scaffold(
         body: Center(
           child: Container(
@@ -74,11 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                             errorText:
                                 'A senha deve conter pelo menos um número',
                           ),
-                          FormBuilderValidators.match(
-                            RegExp(r'.*[A-Z].*'),
-                            errorText:
-                                'A senha deve conter ao menos uma letra maiúscula',
-                          ),
                         ]),
                       ),
                       const SizedBox(height: 16),
@@ -86,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         width: double.infinity,
                         child: FloatingActionButton.extended(
-                          onPressed: _handleLogin,
+                          onPressed: () => _handleLogin(context),
                           label: const Text('Login'),
                           icon: const Icon(Icons.login),
                         ),

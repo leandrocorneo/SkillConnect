@@ -1,10 +1,15 @@
-class LoginApiresponse<T> {
+class LoginApiResponse<T> {
   final T data;
 
-  LoginApiresponse({required this.data});
+  LoginApiResponse({required this.data});
 
-  static fromJson<T>(Map<String, dynamic> json, Function tFromJson) {
-    return LoginApiresponse(data: tFromJson(json['data']));
+  factory LoginApiResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJsonT,
+  ) {
+    return LoginApiResponse<T>(
+      data: fromJsonT(json['data'] as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -15,7 +20,7 @@ class LoginApiresponse<T> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    if (other is LoginApiresponse) {
+    if (other is LoginApiResponse) {
       return other.data == data;
     }
 
