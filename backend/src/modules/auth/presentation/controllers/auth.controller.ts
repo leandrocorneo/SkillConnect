@@ -4,6 +4,8 @@ import { LocalAuthGuard } from '../../../../shared/guards/local.guard';
 import { ReqUser } from 'src/shared/types/interface/requestUser.interface';
 import { LoginUseCase } from '../../domain/use-cases/login.use-case';
 import { RefreshTokenUseCase } from '../../domain/use-cases/refresh-token.use-case';
+import { LoginResponseDto } from '../dto/output/login-response.dto';
+import { BaseResponseDto } from 'src/shared/dto/base-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +17,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req: ReqUser, @Res() res: Response) {
+  async login(@Request() req: ReqUser, @Res() res: Response): Promise<Response<LoginResponseDto>> {
 
     const result = await this.loginUseCase.execute(req.user);
 
@@ -45,7 +47,7 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Request() req, @Res() res: Response) {
+  async refresh(@Request() req, @Res() res: Response): Promise<Response<BaseResponseDto<null>>> {
     const refreshToken = req.cookies['refresh_token'];
     const result = await this.refreshTokenUseCase.execute(refreshToken);
 
@@ -70,7 +72,7 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Res() res: Response) {
+  logout(@Res() res: Response): Response<BaseResponseDto<null>> {
 
     res.clearCookie('auth', {
       httpOnly: true,

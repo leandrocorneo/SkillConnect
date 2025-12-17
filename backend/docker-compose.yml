@@ -21,7 +21,7 @@ services:
 
   nestjs:
     build: .
-    container_name: api
+    container_name: api-nestjs
     restart: always
     depends_on:
       postgres:

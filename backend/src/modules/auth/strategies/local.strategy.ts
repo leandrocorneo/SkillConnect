@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-    const user = await this.localAuthUseCase.execute(email, password);
+    const user = await this.localAuthUseCase.execute({ email, password });
 
     if (!user) throw new UnauthorizedException('Email ou senha inválidos');
     return user;
