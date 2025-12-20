@@ -2,12 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Roles } from '../object-value/user-roles.enum';
 import { UserAuth } from './user-auth.entity';
+import { Service } from './service.entity';
+import { Review } from './review.entity';
+import { Order } from './order.entity';
+import { Message } from './message.entity';
 
 @Entity('users')
 export class User {
@@ -37,4 +42,19 @@ export class User {
 
   @OneToOne(() => UserAuth, (userAuth) => userAuth.user)
   userAuth: UserAuth;
+
+  @OneToMany(() => Service, (service) => service.user)
+  services: Service[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  sentMessages: Message[];
+
+  @OneToMany(() => Message, (message) => message.receiver)
+  receivedMessages: Message[];
 }
