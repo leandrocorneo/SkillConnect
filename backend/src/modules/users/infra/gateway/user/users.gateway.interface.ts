@@ -5,4 +5,5 @@ export interface UsersGatewayInterface {
   findAll(): Promise<User[]>;
   findOneBy(where: Partial<User>): Promise<User | null>;
   create(user: Partial<User>): Promise<User>;
+  update(user: Partial<User>): Promise<User>;
 }

@@ -42,4 +42,9 @@ export class UsersGatewayTypeorm implements UsersGatewayInterface {
   async create(user: Partial<User>): Promise<User> {
     return this.userRepository.save(user);
   }
+
+  async update(user: Partial<User>): Promise<User> {
+    await this.userRepository.update(user.id, user);
+    return this.userRepository.findOneBy({ id: user.id });
+  }
 }

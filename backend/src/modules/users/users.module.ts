@@ -9,6 +9,7 @@ import { UsersAuthGatewayTypeorm } from './infra/gateway/user-auth/users-auth.ga
 import { UserController } from './presentation/controllers/user.controller';
 import { RegisterUseCase } from './domain/use-cases/users/register.use-case';
 import { CreateUserAuthUseCase } from './domain/use-cases/user-auth/create-user-auth.use-case';
+import { EditProfileUseCase } from './domain/use-cases/users/edit-profile.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserAuth])],
@@ -17,6 +18,7 @@ import { CreateUserAuthUseCase } from './domain/use-cases/user-auth/create-user-
     FindUserOneByUseCase,
     FindUserAuthByUseCase,
     RegisterUseCase,
+    EditProfileUseCase,
     UsersGatewayTypeorm,
     UsersAuthGatewayTypeorm,
     CreateUserAuthUseCase,
