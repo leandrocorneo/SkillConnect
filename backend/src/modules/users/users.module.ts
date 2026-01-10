@@ -31,6 +31,11 @@ import { EditProfileUseCase } from './domain/use-cases/users/edit-profile.use-ca
       useClass: UsersAuthGatewayTypeorm
     }
   ],
-  exports: [FindUserOneByUseCase, FindUserAuthByUseCase],
+  exports: [
+    FindUserOneByUseCase, 
+    FindUserAuthByUseCase,
+    'UsersGatewayInterface',
+    'UsersAuthGatewayInterface'
+  ],
 })
 export class UsersModule {}

@@ -18,4 +18,8 @@ export class UsersAuthGatewayTypeorm implements UsersAuthGatewayInterface {
   async create(userAuth: Partial<UserAuth>): Promise<UserAuth> {
     return this.userRepository.save(userAuth);
   }
+
+  async update(id: number, userAuth: Partial<UserAuth>): Promise<void> {
+    await this.userRepository.update(id, userAuth);
+  }
 }

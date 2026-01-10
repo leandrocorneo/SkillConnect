@@ -20,6 +20,27 @@ export class UserAuth {
     @Column({ name: 'user_id', type: 'int' })
     user_id: number;
 
+    @Column({
+        name: "verification_code",
+        type: "varchar",
+        nullable: true
+    })
+    verification_code: string;
+
+    @Column({
+        name: "verification_code_expires_at",
+        type: "timestamp",
+        nullable: true
+    })
+    verification_code_expires_at: Date;
+
+    @Column({
+        name: "verification_code_validated_at",
+        type: "timestamp",
+        nullable: true
+    })
+    verification_code_validated_at: Date;
+
     @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
     created_at: Date;
 
