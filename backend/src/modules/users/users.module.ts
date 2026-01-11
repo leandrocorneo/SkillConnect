@@ -10,6 +10,7 @@ import { UserController } from './presentation/controllers/user.controller';
 import { RegisterUseCase } from './domain/use-cases/users/register.use-case';
 import { CreateUserAuthUseCase } from './domain/use-cases/user-auth/create-user-auth.use-case';
 import { EditProfileUseCase } from './domain/use-cases/users/edit-profile.use-case';
+import { CreateUserUseCase } from './domain/use-cases/users/create-user.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserAuth])],
@@ -22,6 +23,7 @@ import { EditProfileUseCase } from './domain/use-cases/users/edit-profile.use-ca
     UsersGatewayTypeorm,
     UsersAuthGatewayTypeorm,
     CreateUserAuthUseCase,
+    CreateUserUseCase,
     {
       provide: 'UsersGatewayInterface',
       useClass: UsersGatewayTypeorm
