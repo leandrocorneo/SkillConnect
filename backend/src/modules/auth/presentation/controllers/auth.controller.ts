@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Body, Res, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Res, HttpStatus, HttpCode, BadRequestException } from '@nestjs/common';
 import { Response } from 'express';
 import { LocalAuthGuard } from '../../../../shared/guards/local.guard';
 import { ReqUser } from 'src/shared/types/interface/requestUser.interface';
@@ -11,6 +11,7 @@ import { LoginResponseDto } from '../dto/output/login-response.dto';
 import { BaseResponseDto } from 'src/shared/dto/base-response.dto';
 import { VerifyCodeDto } from '../dto/input/verify-code.dto';
 import { ResetPasswordDto } from '../dto/input/reset-password.dto';
+import { ValidateTokenUseCase } from '../../domain/use-cases/validate-token.use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +21,7 @@ export class AuthController {
     private readonly forgotPasswordUseCase: ForgotPasswordUseCase,
     private readonly verifyRecoveryCodeUseCase: VerifyRecoveryCodeUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
+    private readonly validateTokenUseCase: ValidateTokenUseCase,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -78,9 +80,25 @@ export class AuthController {
     });
   }
 
+  @Post('validate-token')
+  @HttpCode(HttpStatus.OK)
+  async validateToken(@Request() req, @Res() res: Response): Promise<Response<BaseResponseDto<null>> > {
+    const token = req.cookies['auth'];
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+    await this.validateTokenUseCase.execute(token);
+
+    return res.json({ 
+      statusCode: HttpStatus.OK,
+      message: 'Token is valid',
+      data: null
+    });
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Res() res: Response): Response<BaseResponseDto<null>> {
+  async logout(@Res() res: Response): Promise<Response<BaseResponseDto<null>>> {
 
     res.clearCookie('auth', {
       httpOnly: true,

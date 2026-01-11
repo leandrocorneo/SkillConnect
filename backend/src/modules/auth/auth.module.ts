@@ -15,6 +15,7 @@ import { ForgotPasswordUseCase } from './domain/use-cases/forgot-password.use-ca
 import { VerifyRecoveryCodeUseCase } from './domain/use-cases/verify-recovery-code.use-case';
 import { ResetPasswordUseCase } from './domain/use-cases/reset-password.use-case';
 import { UserRecoveryResolver } from './domain/resolvers/user-recovery.resolver';
+import { ValidateTokenUseCase } from './domain/use-cases/validate-token.use-case';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { UserRecoveryResolver } from './domain/resolvers/user-recovery.resolver'
     ForgotPasswordUseCase,
     VerifyRecoveryCodeUseCase,
     ResetPasswordUseCase,
+    ValidateTokenUseCase,
     UserRecoveryResolver,
   ],
   exports: [JwtStrategy],
