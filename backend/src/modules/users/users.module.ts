@@ -11,6 +11,7 @@ import { RegisterUseCase } from './domain/use-cases/users/register.use-case';
 import { CreateUserAuthUseCase } from './domain/use-cases/user-auth/create-user-auth.use-case';
 import { EditProfileUseCase } from './domain/use-cases/users/edit-profile.use-case';
 import { CreateUserUseCase } from './domain/use-cases/users/create-user.use-case';
+import { UpdateUserAuthUseCase } from './domain/use-cases/user-auth/update-user-auth.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserAuth])],
@@ -23,6 +24,7 @@ import { CreateUserUseCase } from './domain/use-cases/users/create-user.use-case
     UsersGatewayTypeorm,
     UsersAuthGatewayTypeorm,
     CreateUserAuthUseCase,
+    UpdateUserAuthUseCase,
     CreateUserUseCase,
     {
       provide: 'UsersGatewayInterface',
@@ -36,6 +38,7 @@ import { CreateUserUseCase } from './domain/use-cases/users/create-user.use-case
   exports: [
     FindUserOneByUseCase, 
     FindUserAuthByUseCase,
+    UpdateUserAuthUseCase,
     'UsersGatewayInterface',
     'UsersAuthGatewayInterface'
   ],

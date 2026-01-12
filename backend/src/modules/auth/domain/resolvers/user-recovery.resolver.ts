@@ -1,6 +1,7 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { UserAuth } from "src/core/entities/user-auth.entity";
 import { User } from "src/core/entities/user.entity";
+import { ResourceNotFoundError } from "src/core/errors/domain.error";
 import { UsersAuthGatewayInterface } from "src/modules/users/infra/gateway/user-auth/users-auth.interface";
 import { UsersGatewayInterface } from "src/modules/users/infra/gateway/user/users.gateway.interface";
 
@@ -17,7 +18,7 @@ export class UserRecoveryResolver {
         const user = await this.usersGateway.findOneBy({ email });
 
         if (!user) {
-            throw new NotFoundException('User not found');
+            throw new ResourceNotFoundError('User');
         }
 
         const userAuth = await this.usersAuthGateway.findOneBy({
@@ -25,7 +26,7 @@ export class UserRecoveryResolver {
         });
 
         if (!userAuth) {
-            throw new NotFoundException('User authentication not found');
+            throw new ResourceNotFoundError('User authentication');
         }
 
         return { user, userAuth };

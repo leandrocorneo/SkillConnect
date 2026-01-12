@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { UserAuth } from "src/core/entities/user-auth.entity";
 import { User } from "src/core/entities/user.entity";
 import { Roles } from "src/core/object-value/user-roles.enum";
@@ -8,6 +8,7 @@ import { HashUtil } from "src/shared/utils/hash.util";
 import { CreateUserAuthUseCase } from "../user-auth/create-user-auth.use-case";
 import { CreateUserUseCase } from "./create-user.use-case";
 import { FindUserOneByUseCase } from "./find-one-by-id.use-case";
+import { ConflictError } from "src/core/errors/domain.error";
 
 @Injectable()
 export class RegisterUseCase {
@@ -39,7 +40,7 @@ export class RegisterUseCase {
     private async validateUser(email: string) {
         const user = await this.findOneByUseCase.execute({ email });
         if (user) {
-            throw new ConflictException('User with this email already exists');
+            throw new ConflictError('User with this email already exists');
         }
     }
 

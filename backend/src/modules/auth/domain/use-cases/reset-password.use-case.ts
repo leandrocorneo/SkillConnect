@@ -1,7 +1,8 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UsersAuthGatewayInterface } from 'src/modules/users/infra/gateway/user-auth/users-auth.interface';
 import { HashUtil } from 'src/shared/utils/hash.util';
 import { UserRecoveryResolver } from '../resolvers/user-recovery.resolver';
+import { UnauthorizedError } from 'src/core/errors/domain.error';
 
 @Injectable()
 export class ResetPasswordUseCase {
@@ -15,7 +16,7 @@ export class ResetPasswordUseCase {
         const { userAuth } = await this.userRecoveryResolver.resolveByEmail(email);
 
         if (!userAuth.verification_code_validated_at) {
-            throw new BadRequestException('Verification code must be validated before resetting password');
+            throw new UnauthorizedError('Verification code must be validated before resetting password');
         }
 
         const now = new Date();
@@ -23,7 +24,7 @@ export class ResetPasswordUseCase {
         const timeDiff = (now.getTime() - validatedAt.getTime()) / 1000 / 60;
 
         if (timeDiff > 10) {
-            throw new BadRequestException('Validation has expired. Please request a new verification code');
+            throw new UnauthorizedError('Validation has expired. Please request a new verification code');
         }
 
         const hashedPassword = await HashUtil.hash(newPassword);

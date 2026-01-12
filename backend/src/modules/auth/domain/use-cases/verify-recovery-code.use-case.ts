@@ -1,7 +1,8 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UsersAuthGatewayInterface } from 'src/modules/users/infra/gateway/user-auth/users-auth.interface';
 import { HashUtil } from 'src/shared/utils/hash.util';
 import { UserRecoveryResolver } from '../resolvers/user-recovery.resolver';
+import { BadRequestError, ResourceNotFoundError } from 'src/core/errors/domain.error';
 
 @Injectable()
 export class VerifyRecoveryCodeUseCase {
@@ -15,18 +16,18 @@ export class VerifyRecoveryCodeUseCase {
         const { user, userAuth } = await this.userRecoveryResolver.resolveByEmail(email);
 
         if (!userAuth.verification_code || !userAuth.verification_code_expires_at) {
-            throw new BadRequestException('No verification code found for this user');
+            throw new ResourceNotFoundError('Verification code');
         }
 
         const now = new Date();
         if (now > userAuth.verification_code_expires_at) {
-            throw new BadRequestException('Verification code has expired');
+            throw new BadRequestError('Verification code has expired');
         }
 
         const isCodeValid = await HashUtil.compare(code, userAuth.verification_code);
         
         if (!isCodeValid) {
-            throw new BadRequestException('Invalid verification code');
+            throw new BadRequestError('Invalid verification code');
         }
 
         await this.usersAuthGateway.update(userAuth.id, {

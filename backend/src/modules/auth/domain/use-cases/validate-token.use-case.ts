@@ -1,5 +1,6 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { UnauthorizedError } from "src/core/errors/domain.error";
 
 @Injectable()
 export class ValidateTokenUseCase {
@@ -9,7 +10,7 @@ export class ValidateTokenUseCase {
         try {
             this.jwtService.verify(token);
         } catch (error) {
-            throw new UnauthorizedException('Invalid or expired token');
+            throw new UnauthorizedError('Invalid or expired token');
         }
     }
 }

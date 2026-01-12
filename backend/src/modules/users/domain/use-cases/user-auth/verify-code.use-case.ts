@@ -1,4 +1,5 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestError, ResourceNotFoundError } from 'src/core/errors/domain.error';
 import { UsersAuthGatewayInterface } from 'src/modules/users/infra/gateway/user-auth/users-auth.interface';
 import { UsersGatewayInterface } from 'src/modules/users/infra/gateway/user/users.gateway.interface';
 import { HashUtil } from 'src/shared/utils/hash.util';
@@ -16,28 +17,28 @@ export class VerifyCodeUseCase {
         const user = await this.usersGateway.findOneBy({ email });
         
         if (!user) {
-            throw new NotFoundException('User not found');
+            throw new ResourceNotFoundError('User');
         }
 
         const userAuth = await this.usersAuthGateway.findOneBy({ user_id: user.id });
         
         if (!userAuth) {
-            throw new NotFoundException('User authentication not found');
+            throw new ResourceNotFoundError('User authentication');
         }
 
         if (!userAuth.verification_code || !userAuth.verification_code_expires_at) {
-            throw new BadRequestException('No verification code found for this user');
+            throw new BadRequestError('No verification code found for this user');
         }
 
         const now = new Date();
         if (now > userAuth.verification_code_expires_at) {
-            throw new BadRequestException('Verification code has expired');
+            throw new BadRequestError('Verification code has expired');
         }
 
         const isCodeValid = await HashUtil.compare(code, userAuth.verification_code);
         
         if (!isCodeValid) {
-            throw new BadRequestException('Invalid verification code');
+            throw new BadRequestError('Invalid verification code');
         }
 
         await this.usersAuthGateway.update(userAuth.id, {

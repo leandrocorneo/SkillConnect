@@ -1,4 +1,5 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestError, ResourceNotFoundError } from 'src/core/errors/domain.error';
 import { UsersAuthGatewayInterface } from 'src/modules/users/infra/gateway/user-auth/users-auth.interface';
 import { UsersGatewayInterface } from 'src/modules/users/infra/gateway/user/users.gateway.interface';
 import { HashUtil } from 'src/shared/utils/hash.util';
@@ -16,17 +17,17 @@ export class ResetPasswordUseCase {
         const user = await this.usersGateway.findOneBy({ email });
         
         if (!user) {
-            throw new NotFoundException('User not found');
+            throw new ResourceNotFoundError('User');
         }
 
         const userAuth = await this.usersAuthGateway.findOneBy({ user_id: user.id });
         
         if (!userAuth) {
-            throw new NotFoundException('User authentication not found');
+            throw new ResourceNotFoundError('User authentication');
         }
 
         if (!userAuth.verification_code_validated_at) {
-            throw new BadRequestException('Verification code must be validated before resetting password');
+            throw new BadRequestError('Verification code must be validated before resetting password');
         }
 
         const now = new Date();
@@ -34,7 +35,7 @@ export class ResetPasswordUseCase {
         const timeDiff = (now.getTime() - validatedAt.getTime()) / 1000 / 60;
 
         if (timeDiff > 10) {
-            throw new BadRequestException('Validation has expired. Please request a new verification code');
+            throw new BadRequestError('Validation has expired. Please request a new verification code');
         }
 
         const hashedPassword = await HashUtil.hash(newPassword);

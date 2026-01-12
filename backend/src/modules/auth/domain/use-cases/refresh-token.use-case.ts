@@ -1,5 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UnauthorizedError } from 'src/core/errors/domain.error';
 
 @Injectable()
 export class RefreshTokenUseCase {
@@ -26,7 +27,7 @@ export class RefreshTokenUseCase {
         refresh_token: newRefreshToken,
       };
     } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedError('Invalid refresh token');
     }
   }
 }
