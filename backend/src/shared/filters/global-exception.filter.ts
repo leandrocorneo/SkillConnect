@@ -56,9 +56,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       } else if(exception instanceof ForbiddenError){
         status = HttpStatus.FORBIDDEN;
         message = exception.message;
-      } else if(exception instanceof ConflictError){
-        status = HttpStatus.CONFLICT;
-        message = exception.message;
       } else if(exception instanceof BadRequestError){
         status = HttpStatus.BAD_REQUEST;
         message = exception.message;
